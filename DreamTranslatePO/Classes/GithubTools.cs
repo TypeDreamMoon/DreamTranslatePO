@@ -26,9 +26,14 @@ namespace DreamTranslatePO.Classes
                     HttpResponseMessage response = await client.GetAsync(url);
                     response.EnsureSuccessStatusCode();
 
-                    string jsonResponse = await response.Content.ReadAsStringAsync();
-                    GitHubRelease release = JsonConvert.DeserializeObject<GitHubRelease>(jsonResponse);
+                    var jsonResponse = await response.Content.ReadAsStringAsync();
+                    var release = JsonConvert.DeserializeObject<GitHubRelease>(jsonResponse);
 
+                    if (release == null)
+                    {
+                        return null;
+                    }
+                    
                     Console.WriteLine($"Latest Release Info:");
                     Console.WriteLine($"Tag Name: {release.TagName}");
                     Console.WriteLine($"Name: {release.Name}");
@@ -59,22 +64,30 @@ namespace DreamTranslatePO.Classes
         // 类表示 GitHub 发布版本的结构
         public class GitHubRelease
         {
+            public GitHubRelease()
+            {
+                TagName = "";
+                Name = "";
+                Body = "";
+                PublishedAt = DateTime.MinValue;
+                Assets = new List<ReleaseAsset>();
+            }
             [JsonProperty("tag_name")]
-            public string TagName
+            public string? TagName
             {
                 get;
                 set;
             }
 
             [JsonProperty("name")]
-            public string Name
+            public string? Name
             {
                 get;
                 set;
             }
 
             [JsonProperty("body")]
-            public string Body
+            public string? Body
             {
                 get;
                 set;
@@ -88,7 +101,7 @@ namespace DreamTranslatePO.Classes
             }
 
             [JsonProperty("assets")]
-            public List<ReleaseAsset> Assets
+            public List<ReleaseAsset>? Assets
             {
                 get;
                 set;
@@ -99,14 +112,14 @@ namespace DreamTranslatePO.Classes
         public class ReleaseAsset
         {
             [JsonProperty("name")]
-            public string Name
+            public string? Name
             {
                 get;
                 set;
             }
 
             [JsonProperty("browser_download_url")]
-            public string BrowserDownloadUrl
+            public string? BrowserDownloadUrl
             {
                 get;
                 set;

@@ -54,7 +54,7 @@ namespace DreamTranslatePO.Classes
 
             private List<string>? _comments;
 
-            public List<string> Comments
+            public List<string>? Comments
             {
                 get => _comments;
                 set
@@ -101,7 +101,7 @@ namespace DreamTranslatePO.Classes
                 }
             }
 
-            public event PropertyChangedEventHandler PropertyChanged;
+            public event PropertyChangedEventHandler? PropertyChanged;
 
             protected virtual void OnPropertyChanged(
                 [CallerMemberName] string propertyName = "")
@@ -132,6 +132,7 @@ namespace DreamTranslatePO.Classes
         {
             public PoFile()
             {
+                Header = new PoHeader();
             }
 
             public PoFile(PoFile inFile)

@@ -41,7 +41,7 @@ namespace DreamTranslatePO.Views
         {
             if (VersionTextBlock != null)
             {
-                string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
                 VersionTextBlock.Text = $"Version : {version}";
             }
 

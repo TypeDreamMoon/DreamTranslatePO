@@ -9,16 +9,19 @@ public class AppSettings
         get;
         set;
     }
+
     public string BackgroundMode
     {
         get;
         set;
     }
+
     public string? AiPrompt
     {
         get;
         set;
     }
+
     public string? URL
     {
         get;
@@ -80,7 +83,7 @@ public static class AppSettingsManager
     }
 
 
-    public static AppSettings GetSettings()
+    public static AppSettings? GetSettings()
     {
         if (File.Exists(_settingsFilePath))
         {
