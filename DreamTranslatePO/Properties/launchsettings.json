@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "DreamTranslatePO (Unpackaged)": {
+        "commandName": "Project"
+      },
+      "DreamTranslatePO (Package)": {
+        "commandName": "MsixPackage"
+      }
+    }
+}
