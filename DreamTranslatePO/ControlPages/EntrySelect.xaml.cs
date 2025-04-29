@@ -75,6 +75,8 @@ public sealed partial class EntrySelect : Page
         {
             isUpdatingRange = true;
 
+            start = (int)MinNumberBox.Value;
+
             if (ValueRangeSelector != null)
             {
                 ValueRangeSelector.RangeStart = MinNumberBox.Value;
@@ -94,6 +96,8 @@ public sealed partial class EntrySelect : Page
         try
         {
             isUpdatingRange = true;
+            
+            end = (int)MaxNumberBox.Value;
 
             if (ValueRangeSelector != null)
             {

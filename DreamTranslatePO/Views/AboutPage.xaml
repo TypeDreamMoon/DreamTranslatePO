@@ -29,7 +29,7 @@
             <StackPanel
                 HorizontalAlignment="Center"
                 Padding="15"
-                Spacing="20"
+                Spacing="10"
                 VerticalAlignment="Center">
                 <!--  应用图标  -->
                 <Image
@@ -51,7 +51,15 @@
                     FontSize="16"
                     Foreground="#DDDDDD"
                     HorizontalAlignment="Center"
-                    Text="Version 0.5.1" />
+                    Name="VersionTextBlock"
+                    Text="Version x.x.x.x" />
+
+                <TextBlock
+                    FontSize="16"
+                    Foreground="#DDDDDD"
+                    HorizontalAlignment="Center"
+                    Name="GitVersionTextBlock"
+                    Text="Github Version : 0.0.0.0" />
 
                 <!--  开发者信息  -->
                 <TextBlock
@@ -59,6 +67,14 @@
                     Foreground="#AAAAAA"
                     HorizontalAlignment="Center"
                     Text="Developed by Dream Moon" />
+
+                <!--  开发者信息  -->
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="#AAAAAA"
+                    HorizontalAlignment="Center"
+                    Text="Copyright (C) Dream Moon 2022 - 2025" />
 
                 <!--  说明文本  -->
                 <TextBlock
@@ -70,7 +86,17 @@
                     TextWrapping="Wrap"
                     Width="400" />
 
+                <!--  Link  -->
 
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <HyperlinkButton Content="报告问题" NavigateUri="https://github.com/TypeDreamMoon/DreamTranslatePO/issues" />
+                    <HyperlinkButton Content="贡献代码" NavigateUri="https://github.com/TypeDreamMoon/DreamTranslatePO/pulls" />
+                    <HyperlinkButton Content="文档" NavigateUri="https://github.com/TypeDreamMoon/DreamTranslatePO/wiki" />
+                </StackPanel>
+
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <HyperlinkButton Content="Material Symbols (yesicon.app)" NavigateUri="https://yesicon.app/material-symbols" />
+                </StackPanel>
 
                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                     <HyperlinkButton NavigateUri="https://github.com/TypeDreamMoon">
@@ -112,6 +138,21 @@
             </StackPanel>
 
         </Border>
+
+        <StackPanel
+            HorizontalAlignment="Right"
+            Opacity="1"
+            Padding="15"
+            VerticalAlignment="Bottom">
+            <HyperlinkButton NavigateUri="https://www.pixiv.net/artworks/122938314">
+                <HyperlinkButton.Content>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="作家 : しゅろく/shurock" TextAlignment="Right" />
+                        <TextBlock Text="Pixiv ID : 122938314" TextAlignment="Right" />
+                    </StackPanel>
+                </HyperlinkButton.Content>
+            </HyperlinkButton>
+        </StackPanel>
 
         <media:UIElementExtensions.VisualFactory>
             <media:PipelineVisualFactory>

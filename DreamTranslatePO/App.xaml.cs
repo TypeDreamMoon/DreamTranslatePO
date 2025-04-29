@@ -96,6 +96,8 @@ public partial class App : Application
             services.AddTransient<MainViewModel>();
             services.AddTransient<AboutViewModel>();
             services.AddTransient<AboutPage>();
+            services.AddTransient<CsvTranslateViewModel>();
+            services.AddTransient<CsvTranslatePage>();
             services.AddTransient<MainPage>();
             services.AddTransient<ShellPage>();
             services.AddTransient<ShellViewModel>();

@@ -60,9 +60,16 @@
                         <ImageIcon Source="../Assets/MaterialSymbolsHome.svg" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+
                 <NavigationViewItem helpers:NavigationHelper.NavigateTo="DreamTranslatePO.ViewModels.POTranslateViewModel" x:Uid="Shell_POTranslate">
                     <NavigationViewItem.Icon>
                         <ImageIcon Source="../Assets/MaterialSymbolsGlobe.svg" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItem helpers:NavigationHelper.NavigateTo="DreamTranslatePO.ViewModels.CsvTranslateViewModel" x:Uid="Shell_CsvTranslate">
+                    <NavigationViewItem.Icon>
+                        <ImageIcon Source="../Assets/MaterialSymbolsCsv.svg" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
