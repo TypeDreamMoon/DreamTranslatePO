@@ -154,6 +154,8 @@
             </HyperlinkButton>
         </StackPanel>
 
+
+
         <media:UIElementExtensions.VisualFactory>
             <media:PipelineVisualFactory>
                 <media:LuminanceToAlphaEffect />
@@ -213,6 +215,5 @@
                 <behaviors:StartAnimationAction Animation="{x:Bind ClipAnimation}" />
             </interactivity:EventTriggerBehavior>
         </interactivity:Interaction.Behaviors>
-
     </Grid>
 </Page>

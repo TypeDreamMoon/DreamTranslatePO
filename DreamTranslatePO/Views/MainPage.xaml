@@ -35,54 +35,58 @@
 
             </StackPanel>
 
-            <StackPanel
+            <Border
+                Background="{ThemeResource SystemControlAcrylicElementBrush}"
+                CornerRadius="10"
                 HorizontalAlignment="Right"
-                Padding="25"
-                Spacing="10"
+                Margin="25"
+                Padding="10"
                 VerticalAlignment="Bottom">
-                <Button
-                    Click="QuickStartPoButton_OnClick"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Stretch"
-                    Name="QuickStartPoButton">
-                    <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
-                        <Image
-                            Grid.Column="0"
-                            Height="25"
-                            HorizontalAlignment="Left"
-                            Margin="0,0,5,0"
-                            Source="../Assets/MaterialSymbolsArrowLeftAlt.svg"
-                            Width="25" />
-                        <TextBlock
-                            FontSize="20"
-                            Grid.Column="1"
-                            HorizontalAlignment="Right"
-                            Text="开始Po文件翻译"
-                            VerticalAlignment="Center" />
-                    </Grid>
-                </Button>
+                <StackPanel Spacing="10">
+                    <Button
+                        Click="QuickStartPoButton_OnClick"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        Name="QuickStartPoButton">
+                        <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
+                            <Image
+                                Grid.Column="0"
+                                Height="25"
+                                HorizontalAlignment="Left"
+                                Margin="0,0,5,0"
+                                Source="../Assets/MaterialSymbolsArrowLeftAlt.svg"
+                                Width="25" />
+                            <TextBlock
+                                FontSize="20"
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                Text="开始Po文件翻译"
+                                VerticalAlignment="Center" />
+                        </Grid>
+                    </Button>
 
-                <Button
-                    Click="QuickStartCsvButton_OnClick"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Stretch"
-                    Name="QuickStartCsvButton">
-                    <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
-                        <Image
-                            Grid.Column="0"
-                            Height="25"
-                            Margin="0,0,5,0"
-                            Source="../Assets/MaterialSymbolsArrowLeftAlt.svg"
-                            Width="25" />
-                        <TextBlock
-                            FontSize="20"
-                            Grid.Column="1"
-                            Text="开始CSV翻译"
-                            TextAlignment="Right"
-                            VerticalAlignment="Center" />
-                    </Grid>
-                </Button>
-            </StackPanel>
+                    <Button
+                        Click="QuickStartCsvButton_OnClick"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        Name="QuickStartCsvButton">
+                        <Grid ColumnDefinitions="Auto, *" ColumnSpacing="5">
+                            <Image
+                                Grid.Column="0"
+                                Height="25"
+                                Margin="0,0,5,0"
+                                Source="../Assets/MaterialSymbolsArrowLeftAlt.svg"
+                                Width="25" />
+                            <TextBlock
+                                FontSize="20"
+                                Grid.Column="1"
+                                Text="开始CSV翻译"
+                                TextAlignment="Right"
+                                VerticalAlignment="Center" />
+                        </Grid>
+                    </Button>
+                </StackPanel>
+            </Border>
         </Grid>
     </Border>
 </Page>

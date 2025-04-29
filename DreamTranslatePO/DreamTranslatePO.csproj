@@ -15,7 +15,7 @@
         <EnableMsixTooling>true</EnableMsixTooling>
         <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
         <WindowsPackageType>None</WindowsPackageType>
-        <Version>0.6.0</Version>
+        <Version>0.6.0.1</Version>
         <Title>Dream Translate PO</Title>
         <Authors>Dream Moon</Authors>
         <Description>Po File Automation Translate</Description>
