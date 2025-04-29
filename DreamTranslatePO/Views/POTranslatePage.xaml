@@ -18,6 +18,7 @@
               Grid.Column="0"
               HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch">
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -25,22 +26,37 @@
                 <RowDefinition Height="2*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <!-- 功能按钮 -->
+
+            <!-- Top Buttons -->
+
             <Grid ColumnSpacing="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Name="OpenPoButton" Content="打开 PO 文件" Click="OpenPoButton_Click" Padding="8,4" />
                 <Button Grid.Column="1" x:Name="ExportPoButton" Content="导出为 PO 文件" Click="ExportPoButton_Click" Padding="8,4" />
-                <Button Grid.Column="2" Name="TranslatePoButton" Content="开始自动化翻译" Click="TranslatePoButton_OnClick" Padding="8, 4"
+                <Button Grid.Column="2" Name="PauseTranslatePoButton" Content="暂停任务" Click="PauseTranslatePoButton_OnClick" Padding="8, 4" HorizontalAlignment="Right" />
+                <Button Grid.Column="3" Name="StopTranslatePoButton" Content="取消任务" Click="StopTranslatePoButton_OnClick" Padding="8, 4" HorizontalAlignment="Right" />
+                <Button Grid.Column="4" Name="TranslatePoButton" Content="开始自动化翻译" Click="TranslatePoButton_OnClick" Padding="8, 4"
                         HorizontalAlignment="Right" />
             </Grid>
 
             <!-- Loading Progress Bar -->
+
             <ProgressBar x:Name="StateProgressBar" Grid.Row="1" IsIndeterminate="True" ShowPaused="False" ShowError="False" />
-            <ProgressBar x:Name="ValueProgressBar" Grid.Row="2" />
+            <Grid Grid.Row="2" ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ProgressBar Grid.Column="0" x:Name="ValueProgressBar" />
+                <TextBlock Grid.Column="1" Name="ValueProgressTextBox">0/0</TextBlock>
+            </Grid>
+
             <!-- List View -->
 
             <ListView x:Name="EntriesListView" Grid.Row="3"
@@ -69,12 +85,20 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+
             <!-- Footer -->
+
             <TextBlock x:Name="ResultText" Grid.Row="4" FontStyle="Italic" Margin="0,8,0,0" />
+
         </Grid>
+
+
+        <!-- Details -->
+
 
         <ScrollView Grid.Column="1">
             <Grid>
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -86,7 +110,6 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" FontWeight="Bold" FontSize="15" Margin="5">Information</TextBlock>
-
                 <ScrollView Grid.Row="1"
                             Height="200"
                             Margin="10">
@@ -97,8 +120,8 @@
                                TextWrapping="Wrap" />
                 </ScrollView>
 
-                <TextBlock Grid.Row="2" FontWeight="Bold" FontSize="15" Margin="5">Entry Information</TextBlock>
 
+                <TextBlock Grid.Row="2" FontWeight="Bold" FontSize="15" Margin="5">Entry Information</TextBlock>
                 <ScrollView Grid.Row="3"
                             Height="200"
                             Margin="10"
@@ -108,8 +131,8 @@
                                TextWrapping="WrapWholeWords" />
                 </ScrollView>
 
-                <TextBlock Grid.Row="4" FontWeight="Bold" FontSize="15" Margin="5">Translate</TextBlock>
 
+                <TextBlock Grid.Row="4" FontWeight="Bold" FontSize="15" Margin="5">Translate</TextBlock>
                 <TextBox Grid.Row="5"
                          x:Name="AiPromptBox"
                          HorizontalAlignment="Stretch"
@@ -119,6 +142,7 @@
                          AcceptsReturn="True"
                          Margin="10"
                          TextChanged="AiPromptBox_OnTextChanged" />
+
 
                 <Button Grid.Row="6" Name="ButtonTranslate"
                         Click="ButtonTranslate_OnClick"

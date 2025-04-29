@@ -49,7 +49,13 @@ public class AppSettings
         set;
     }
 
-    public string? PromptForReplacementWord
+    public string PromptForReplacementWord
+    {
+        get;
+        set;
+    }
+
+    public string PromptForReplacementWordContext
     {
         get;
         set;
@@ -59,6 +65,8 @@ public class AppSettings
     {
         BackgroundMode = "Mica";
         BackgroundOpacity = 0.5f;
+        PromptForReplacementWord = "[PROMPT]";
+        PromptForReplacementWordContext = "[CONTEXT]";
     }
 }
 

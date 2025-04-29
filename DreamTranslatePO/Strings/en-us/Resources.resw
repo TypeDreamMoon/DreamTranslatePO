@@ -70,6 +70,9 @@
   <data name="Shell_POTranslate.Content" xml:space="preserve">
     <value>PO Translate</value>
   </data>
+  <data name="Shell_About.Content" xml:space="preserve">
+    <value>About</value>
+  </data>
   <data name="AppNotificationSamplePayload" xml:space="preserve">
     <value>&lt;toast launch="action=ToastClick"&gt;
   &lt;visual&gt;

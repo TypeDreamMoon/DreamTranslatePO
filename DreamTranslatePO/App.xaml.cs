@@ -94,6 +94,8 @@ public partial class App : Application
             services.AddTransient<POTranslateViewModel>();
             services.AddTransient<POTranslatePage>();
             services.AddTransient<MainViewModel>();
+            services.AddTransient<AboutViewModel>();
+            services.AddTransient<AboutPage>();
             services.AddTransient<MainPage>();
             services.AddTransient<ShellPage>();
             services.AddTransient<ShellViewModel>();

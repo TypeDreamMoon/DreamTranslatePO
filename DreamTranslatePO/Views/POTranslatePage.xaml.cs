@@ -10,10 +10,12 @@ using Microsoft.UI.Xaml.Controls;
 using DreamTranslatePO.ViewModels;
 using DreamTranslatePO.Classes.PoParser;
 using DreamTranslatePO.Classes;
+using DreamTranslatePO.Contracts.Services;
+using DreamTranslatePO.ControlPages;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
-using Tools = DreamTranslatePO.Classes.Tools;
-using ATools = Dream.AI.Tools;
+using Microsoft.Windows.AppNotifications.Builder;
+using AiTools = Dream.AI.Tools;
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 
 namespace DreamTranslatePO.Views;
@@ -23,6 +25,21 @@ public sealed partial class POTranslatePage : Page
     private readonly DispatcherQueue _dispatcher;
     private PoFile _poFile;
     private static readonly AiClient _aiClient = new AiClient();
+    private bool isPausedTranslate = false;
+    private bool isStopTranslate = false;
+    private readonly object pauseLock = new object();
+
+    private void TogglePause()
+    {
+        lock (pauseLock)
+        {
+            isPausedTranslate = !isPausedTranslate;
+        }
+
+        PauseTranslatePoButton.Content = isPausedTranslate ? "继续" : "暂停";
+        ValueProgressBar.ShowPaused = isPausedTranslate;
+        StateProgressBar.ShowPaused = isPausedTranslate;
+    }
 
     public ObservableCollection<PoEntry> PoEntries
     {
@@ -54,6 +71,7 @@ public sealed partial class POTranslatePage : Page
         if (_poFile.Entries.Count != 0)
         {
             AppGlobalCacheData.Get()._data.cachedPoFile = _poFile;
+            Console.WriteLine($"缓存 {_poFile.Entries.Count} 条记录");
         }
     }
 
@@ -61,12 +79,23 @@ public sealed partial class POTranslatePage : Page
     {
         // Hidden Progress Bar
         StateProgressBar.Visibility = Visibility.Collapsed;
+        ValueProgressBar.Visibility = Visibility.Collapsed;
+        ValueProgressTextBox.Visibility = Visibility.Collapsed;
+        StopTranslatePoButton.Visibility = Visibility.Collapsed;
+        StopTranslatePoButton.IsEnabled = false;
+        PauseTranslatePoButton.Visibility = Visibility.Collapsed;
+        PauseTranslatePoButton.IsEnabled = false;
+        TranslatePoButton.IsEnabled = false;
+
         AiPromptBox.PlaceholderText = $"在此输入提示词... \"{AppSettingsManager.GetSettings().PromptForReplacementWord}\"为要替换的文本.";
         AiPromptBox.Text = AppSettingsManager.GetSettings().AiPrompt;
 
-        if (AppGlobalCacheData.Get()._data.cachedPoFile != null)
+        if (AppGlobalCacheData.Get()._data.cachedPoFile != null && AppGlobalCacheData.Get()._data.cachedPoFile.IsValid())
         {
-            OpenFile(AppGlobalCacheData.Get()._data.cachedPoFile);
+            Console.WriteLine("从缓存中加载 PO 文件");
+            _poFile.OpenFile(AppGlobalCacheData.Get()._data.cachedPoFile);
+            Console.WriteLine($"{_poFile.Entries.Count} 条记录");
+            UpdateListView();
         }
     }
 
@@ -79,48 +108,27 @@ public sealed partial class POTranslatePage : Page
         var file = await picker.PickSingleFileAsync();
         if (file == null) return;
 
-        OpenFile(file);
+        await _poFile.OpenFile(file);
+
+        UpdateListView();
     }
 
-    private async void OpenFile(StorageFile inFile)
+    private void UpdateListView()
     {
-        var content = await FileIO.ReadTextAsync(inFile);
-        OpenFile(PoFileReader.ParseContent(content));
-    }
-
-    private void OpenFile(PoFile inFile)
-    {
-        _poFile = inFile;
-
-        foreach (var entry in _poFile.Entries)
-            PoEntries.Add(entry);
-
-        var sb = new StringBuilder();
-
-        foreach (var elem in _poFile.Comments)
-        {
-            sb.AppendLine($"{elem}");
-        }
-
-        sb.AppendLine($"Project-Id-Version: {_poFile.Header.ProjectIdVersion}");
-        sb.AppendLine($"POT-Creation-Date: {_poFile.Header.PotCreationDate}");
-        sb.AppendLine($"PO-Revision-Date: {_poFile.Header.PoRevisionDate}");
-        sb.AppendLine($"Language-Team: {_poFile.Header.LanguageTeam}");
-        sb.AppendLine($"Language: {_poFile.Header.Language}");
-        sb.AppendLine($"MIME-Version: {_poFile.Header.MimeVersion}");
-        sb.AppendLine($"Content-Type: {_poFile.Header.ContentType}");
-        sb.AppendLine($"Content-Transfer-Encoding: {_poFile.Header.ContentTransferEncoding}");
-        sb.AppendLine($"Plural-Forms: {_poFile.Header.PluralForms}");
-
         _dispatcher.TryEnqueue(() =>
         {
-            InformationTextBlock.Text = sb.ToString();
+            InformationTextBlock.Text = _poFile.BuildPoFileInformationString();
             PoEntries.Clear();
             foreach (var entry in _poFile.Entries)
                 PoEntries.Add(entry);
             ResultText.Text = $"打开成功. 全部 {PoEntries.Count} 条记录";
+            if (PoEntries.Count != 0)
+            {
+                TranslatePoButton.IsEnabled = true;
+            }
         });
     }
+
 
     private async void ExportPoButton_Click(object sender, RoutedEventArgs e)
     {
@@ -130,57 +138,156 @@ public sealed partial class POTranslatePage : Page
             return;
         }
 
-        // 选择保存位置
-        var picker = new FileSavePicker();
-        InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
-        picker.FileTypeChoices.Add("PO Files", new List<string> { ".po" });
-        picker.SuggestedFileName = "translated.po";
-
-        // 保存文件
-        var file = await picker.PickSaveFileAsync();
-        if (file == null) return;
-
-        try
+        var file = await _poFile.ExportFile();
+        if (file == null)
         {
-            var poContent = Tools.BuildPoContent(_poFile);
-            await FileIO.WriteTextAsync(file, poContent, Windows.Storage.Streams.UnicodeEncoding.Utf8);
-            ResultText.Text = $"成功导出至: {file.Path}";
+            ResultText.Text = "导出失败";
+            return;
         }
-        catch (Exception ex)
+
+        ResultText.Text = $"导出成功. {file.Name}";
+    }
+
+    private async Task WaitForResume()
+    {
+        while (isPausedTranslate)
         {
-            ResultText.Text = $"导出失败: {ex.Message}";
+            if (isStopTranslate)
+            {
+                break;
+            }
+
+            await Task.Delay(100);
         }
+    }
+
+    private string GetPoEntryTranslateString(PoEntry inEntry)
+    {
+        var repStr = AppSettingsManager.GetSettings().PromptForReplacementWord;
+        var str = AiPromptBox.Text;
+        if (repStr.Length != 0)
+        {
+            str = str.Replace(AppSettingsManager.GetSettings().PromptForReplacementWord, inEntry.MsgId);
+        }
+
+        var repStrContext = AppSettingsManager.GetSettings().PromptForReplacementWordContext;
+        if (repStrContext.Length != 0)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Tips PO FILE INFORMATION :");
+            sb.Append(_poFile.BuildPoFileInformationString());
+            sb.AppendLine($"Context = {inEntry.MsgCtxt}");
+            sb.AppendLine($"MsgId = {inEntry.MsgId}");
+            sb.AppendLine($"MsgStr = {inEntry.MsgStr}");
+            sb.AppendLine($"Key = {inEntry.Key}");
+            sb.AppendLine($"SoruceLocation = {ArrayToString(inEntry.SourceLocations)}");
+            sb.AppendLine($"Source = {ArrayToString(inEntry.Source)}");
+
+            str = str.Replace(repStrContext, sb.ToString());
+        }
+
+        return str;
     }
 
     private async void TranslatePoButton_OnClick(object sender, RoutedEventArgs e)
     {
-        Console.WriteLine($"=================== Start Translate - Time : {DateTime.Now.ToString()} ======================");
-
-        StateProgressBar.Visibility = Visibility.Visible;
-        ValueProgressBar.Visibility = Visibility.Visible;
-        ValueProgressBar.Value = 0;
-
-        for (int i = 0; i < PoEntries.Count; i++)
+        try
         {
-            PoEntry entry = PoEntries[i];
-            string str = AiPromptBox.Text.Replace(AppSettingsManager.GetSettings().PromptForReplacementWord, entry.MsgId);
-            Console.WriteLine($">>>>> Start Translate : {entry.MsgStr} Send Str : {str}");
+            Console.WriteLine($"=================== Start Translate - Time : {DateTime.Now} ======================");
 
-            // 异步调用翻译并获取结果
-            var translatedText = await Translate(str);
+            int startEntryIndex = 0;
+            int endEntryIndex = PoEntries.Count;
 
-            // 更新 PoEntry 中的 MsgStr
-            PoEntries[i].MsgStr = Tools.RemoveBlankLines(translatedText);
+            ContentDialog dialog = new ContentDialog();
+            EntrySelect entrySelect = new EntrySelect();
 
-            ValueProgressBar.Value = (i + 1) * 100 / _poFile.Entries.Count;
+            entrySelect.SetSliderRange(startEntryIndex, endEntryIndex);
 
-            Console.WriteLine($"<<<<<< End Translate : {entry.MsgStr}");
+            dialog.XamlRoot = this.XamlRoot;
+            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+            dialog.Title = "选择范围";
+            dialog.PrimaryButtonText = "确定";
+            dialog.CloseButtonText = "取消";
+            dialog.DefaultButton = ContentDialogButton.Primary;
+            dialog.Content = entrySelect;
+
+            var result = await dialog.ShowAsync();
+
+            if (result != ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            startEntryIndex = entrySelect.GetSliderRangeMinimum();
+            endEntryIndex = entrySelect.GetSliderRangeMaximum();
+
+            SetTranslateWidgetState(true);
+            isStopTranslate = false;
+
+            for (int i = startEntryIndex; i < endEntryIndex; i++)
+            {
+                if (isStopTranslate) break;
+
+                await WaitForResume(); // 等待恢复
+
+                PoEntry entry = PoEntries[i];
+                var translateStr = GetPoEntryTranslateString(entry);
+                Console.WriteLine($"==> Start Translate : {entry.MsgStr} Send Str : \n[ {translateStr} ]");
+
+                // 添加异常处理到具体的异步操作
+                try
+                {
+                    var translatedText = await Translate(translateStr);
+                    PoEntries[i].MsgStr = PoTools.RemoveBlankLines(translatedText);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"翻译失败: {ex.Message}");
+                    // 可选：标记条目为未翻译或记录错误
+                }
+
+                // 更新 UI 状态
+                ValueProgressBar.Value = (int)((i + 1 - startEntryIndex) * 100 / (endEntryIndex - startEntryIndex));
+                ValueProgressTextBox.Text = $"{i + 1 - startEntryIndex} / {(endEntryIndex - startEntryIndex)}";
+
+                Console.WriteLine($"<== End Translate   : {entry.MsgStr}");
+            }
+
+            SetTranslateWidgetState(false);
+
+            var notification = isStopTranslate
+                ? "翻译任务取消"
+                : "翻译任务完成";
+            AppNotificationBuilder builder = new AppNotificationBuilder();
+            builder.AddText(notification);
+            App.GetService<IAppNotificationService>().Show(builder);
+
+            Console.WriteLine($"=================== {(isStopTranslate ? "Cancel" : "End")} Translate - Time : {DateTime.Now} ======================");
         }
+        catch (Exception ex)
+        {
+            // 记录全局异常
+            Console.WriteLine($"全局异常: {ex}");
+            AppNotificationBuilder builder = new AppNotificationBuilder();
+            builder.AddText($"翻译任务失败: {ex.Message}");
+            App.GetService<IAppNotificationService>().Show(builder);
+            SetTranslateWidgetState(false);
+        }
+    }
 
-        StateProgressBar.Visibility = Visibility.Collapsed;
-        ValueProgressBar.Visibility = Visibility.Collapsed;
+    private void SetTranslateWidgetState(bool isEnable)
+    {
+        _dispatcher.TryEnqueue(() =>
+        {
+            PauseTranslatePoButton.IsEnabled = isEnable;
+            PauseTranslatePoButton.Visibility = isEnable ? Visibility.Visible : Visibility.Collapsed;
+            StopTranslatePoButton.IsEnabled = isEnable;
+            StopTranslatePoButton.Visibility = isEnable ? Visibility.Visible : Visibility.Collapsed;
 
-        Console.WriteLine($"=================== End Translate - Time : {DateTime.Now.ToString()} ======================");
+            ValueProgressBar.Visibility = isEnable ? Visibility.Visible : Visibility.Collapsed;
+            ValueProgressTextBox.Visibility = isEnable ? Visibility.Visible : Visibility.Collapsed;
+            StateProgressBar.Visibility = isEnable ? Visibility.Visible : Visibility.Collapsed;
+        });
     }
 
     public async Task<string> Translate(string InStr)
@@ -197,7 +304,7 @@ public sealed partial class POTranslatePage : Page
             .SetN(1)
             .SetResponseFormat(new RequestFormat());
 
-        return ATools.GetContentFromJsonString(await _aiClient.Send());
+        return AiTools.GetContentFromJsonString(await _aiClient.Send());
     }
 
     public string ArrayToString(List<string> strList)
@@ -239,7 +346,7 @@ public sealed partial class POTranslatePage : Page
         var translatedText = await Translate(prompt);
 
         // 更新 UI 线程上的 PoEntries
-        PoEntries[EntriesListView.SelectedIndex].MsgStr = Tools.RemoveBlankLines(translatedText);
+        PoEntries[EntriesListView.SelectedIndex].MsgStr = PoTools.RemoveBlankLines(translatedText);
 
 
         StateProgressBar.Visibility = Visibility.Collapsed;
@@ -254,6 +361,33 @@ public sealed partial class POTranslatePage : Page
             AppSettings Settings = AppSettingsManager.GetSettings();
             Settings.AiPrompt = AiPromptBox.Text;
             AppSettingsManager.SaveSettings(Settings);
+        }
+    }
+
+    private void PauseTranslatePoButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        TogglePause();
+    }
+
+    private async void StopTranslatePoButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        ContentDialog dialog = new ContentDialog
+        {
+            XamlRoot = this.XamlRoot,
+            Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style,
+            Title = "提示",
+            Content = "确定要取消翻译吗？",
+            CloseButtonText = "取消",
+            PrimaryButtonText = "确定",
+            DefaultButton = ContentDialogButton.Close
+        };
+
+        var result = await dialog.ShowAsync();
+
+        if (result == ContentDialogResult.Primary)
+        {
+            // Set the flag to true for cancellation
+            isStopTranslate = true;
         }
     }
 }

@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="DreamTranslatePO.ControlPages.EntrySelect"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d">
+
+    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Spacing="15">
+        <TextBlock Text="选择需要翻译的条目范围" />
+        <controls:RangeSelector Name="ValueRangeSelector" ValueChanged="RangeSelector_OnValueChanged"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <NumberBox Grid.Column="0" Name="MinNumberBox" Header="开始条目" SpinButtonPlacementMode="Inline" ValueChanged="MinNumberBox_OnValueChanged" />
+            <NumberBox Grid.Column="1" Name="MaxNumberBox" Header="结束条目" SpinButtonPlacementMode="Inline" ValueChanged="MaxNumberBox_OnValueChanged"/>
+        </Grid>
+    </StackPanel>
+</Page>

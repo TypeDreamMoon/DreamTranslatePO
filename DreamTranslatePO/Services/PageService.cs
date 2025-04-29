@@ -17,6 +17,7 @@ public class PageService : IPageService
         Configure<MainViewModel, MainPage>();
         Configure<POTranslateViewModel, POTranslatePage>();
         Configure<SettingsViewModel, SettingsPage>();
+        Configure<AboutViewModel, AboutPage>();
     }
 
     public Type GetPageType(string key)

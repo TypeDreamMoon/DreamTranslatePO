@@ -24,18 +24,24 @@
         <Company>Dream Moon Studio</Company>
     </PropertyGroup>
     <ItemGroup>
+      <None Remove="Views\AboutPage.xaml" />
+    </ItemGroup>
+    <ItemGroup>
         <Manifest Include="$(ApplicationManifest)" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
         <PackageReference Include="CommunityToolkit.WinUI.Animations" Version="8.2.250402" />
+        <PackageReference Include="CommunityToolkit.WinUI.Behaviors" Version="8.2.250402" />
         <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.250402" />
+        <PackageReference Include="CommunityToolkit.WinUI.Controls.RangeSelector" Version="8.2.250402" />
         <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.250402" />
         <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.250402" />
         <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="8.2.250402" />
+        <PackageReference Include="CommunityToolkit.WinUI.Media" Version="8.2.250402" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
         <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250401001" />
-        <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.9" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="3.0.0" />
         <PackageReference Include="WinUIEx" Version="2.3.2" />
     </ItemGroup>
     <ItemGroup>
@@ -46,6 +52,9 @@
         <None Update="appsettings.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <Page Update="Views\AboutPage.xaml">
+          <Generator>MSBuild:Compile</Generator>
+        </Page>
     </ItemGroup>
     <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
         <ProjectCapability Include="Msix" />

@@ -5,6 +5,7 @@ using DreamTranslatePO.Contracts.Services;
 using DreamTranslatePO.ViewModels;
 
 using Microsoft.Windows.AppNotifications;
+using Microsoft.Windows.AppNotifications.Builder;
 
 namespace DreamTranslatePO.Notifications;
 
@@ -57,6 +58,13 @@ public class AppNotificationService : IAppNotificationService
         AppNotificationManager.Default.Show(appNotification);
 
         return appNotification.Id != 0;
+    }
+
+    public bool Show(AppNotificationBuilder builder)
+    {
+        var appNotification = builder.BuildNotification();
+        AppNotificationManager.Default.Show(appNotification);
+        return appNotification.Id  != 0;
     }
 
     public NameValueCollection ParseArguments(string arguments)

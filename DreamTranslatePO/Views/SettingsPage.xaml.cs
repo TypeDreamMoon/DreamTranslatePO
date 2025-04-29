@@ -40,6 +40,7 @@ public sealed partial class SettingsPage : Page
             Stream = StreamToggleSwitch.IsOn,
             MaxTokens = (int)MaxTokensSlider.Value,
             PromptForReplacementWord = PromptRepWordTextBox.Text,
+            PromptForReplacementWordContext = PromptRepWordContextTextBox.Text,
             AiPrompt = AiPromptBox.Text,
             BackgroundOpacity = BackgroundOpacitySlider.Value,
             BackgroundMode = BackgroundModeComboBox.SelectedItem.ToString()
@@ -63,6 +64,7 @@ public sealed partial class SettingsPage : Page
         UrlTextBox.Text = settings.URL;
         
         PromptRepWordTextBox.Text = settings.PromptForReplacementWord;
+        PromptRepWordContextTextBox.Text = settings.PromptForReplacementWordContext;
         
         ModelTextBox.Text = settings.Model;
         
