@@ -53,12 +53,12 @@
                 -->
                 <NavigationViewItem x:Uid="Shell_Main" helpers:NavigationHelper.NavigateTo="DreamTranslatePO.ViewModels.MainViewModel">
                     <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
+                        <ImageIcon Source="../Assets/MaterialSymbolsHome.svg"></ImageIcon>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem x:Uid="Shell_POTranslate" helpers:NavigationHelper.NavigateTo="DreamTranslatePO.ViewModels.POTranslateViewModel">
                     <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xe7c3;"/>
+                        <ImageIcon Source="../Assets/MaterialSymbolsGlobe.svg"></ImageIcon>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>

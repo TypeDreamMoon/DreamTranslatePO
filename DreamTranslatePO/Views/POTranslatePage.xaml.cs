@@ -50,7 +50,11 @@ public sealed partial class POTranslatePage : Page
         {
             _poFile.Entries.Add(elem);
         }
-        AppGlobalCacheData.Get()._data.cachedPoFile = _poFile;
+
+        if (_poFile.Entries.Count != 0)
+        {
+            AppGlobalCacheData.Get()._data.cachedPoFile = _poFile;
+        }
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -161,13 +165,13 @@ public sealed partial class POTranslatePage : Page
             PoEntry entry = PoEntries[i];
             string str = AiPromptBox.Text.Replace(AppSettingsManager.GetSettings().PromptForReplacementWord, entry.MsgId);
             Console.WriteLine($">>>>> Start Translate : {entry.MsgStr} Send Str : {str}");
-            
+
             // 异步调用翻译并获取结果
             var translatedText = await Translate(str);
 
             // 更新 PoEntry 中的 MsgStr
             PoEntries[i].MsgStr = Tools.RemoveBlankLines(translatedText);
-            
+
             ValueProgressBar.Value = (i + 1) * 100 / _poFile.Entries.Count;
 
             Console.WriteLine($"<<<<<< End Translate : {entry.MsgStr}");
