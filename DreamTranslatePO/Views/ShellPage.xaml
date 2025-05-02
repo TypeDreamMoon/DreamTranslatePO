@@ -73,6 +73,12 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
+                <NavigationViewItem helpers:NavigationHelper.NavigateTo="DreamTranslatePO.ViewModels.ConvertViewModel" x:Uid="Shell_Convert">
+                    <NavigationViewItem.Icon>
+                        <ImageIcon Source="../Assets/MaterialSymbolsConvertToText.svg" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>

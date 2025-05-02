@@ -97,6 +97,15 @@ public sealed partial class POTranslatePage : Page
             Console.WriteLine($"{_poFile.Entries.Count} 条记录");
             UpdateListView();
         }
+        
+        // Check Model Is Valid
+        if (AppSettingsManager.GetSettings().APIKey.Length == 0)
+        {
+            TranslatePoButton.IsEnabled = false;
+            ButtonTranslate.IsEnabled = false;
+            TranslatePoButton.Content = "请先输入 API Key 才能进行翻译";
+            ButtonTranslate.Content = "请先输入 API Key 才能进行翻译";
+        }
     }
 
     private async void OpenPoButton_Click(object sender, RoutedEventArgs e)
@@ -295,7 +304,7 @@ public sealed partial class POTranslatePage : Page
         _aiClient.InitializeRequestBody()
             .SetModel(AppSettingsManager.GetSettings().Model)
             .AddMessage(new RequestMessage(ERole.User, InStr))
-            .SetStream(AppSettingsManager.GetSettings().Stream)
+            .SetStream(false)
             .SetMaxTokens(AppSettingsManager.GetSettings().MaxTokens)
             .SetTemperature(0.7)
             .SetTopP(0.7)

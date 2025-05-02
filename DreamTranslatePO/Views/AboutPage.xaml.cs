@@ -42,7 +42,7 @@ namespace DreamTranslatePO.Views
             if (VersionTextBlock != null)
             {
                 var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                VersionTextBlock.Text = $"Version : {version}";
+                VersionTextBlock.Text = $"Current Version : {version}";
             }
 
             UpdateGithubVersion();
@@ -56,11 +56,11 @@ namespace DreamTranslatePO.Views
                 var release = await GitHubReleaseFetcher.GetLatestReleaseAsync("TypeDreamMoon", "DreamTranslatePO");
                 if (release != null)
                 {
-                    GitVersionTextBlock.Text = $"Last Version : {release.TagName}";
+                    GitVersionTextBlock.Text = $"Remote Release Version : {release.TagName}";
                 }
                 else
                 {
-                    GitVersionTextBlock.Text = "Last Version : Failed to get latest release";
+                    GitVersionTextBlock.Text = "Remote Release Version : Failed to get latest release";
                 }
             }
         }

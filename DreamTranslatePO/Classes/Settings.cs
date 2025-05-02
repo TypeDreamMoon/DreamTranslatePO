@@ -40,12 +40,6 @@ public class AppSettings
         set;
     }
 
-    public bool Stream
-    {
-        get;
-        set;
-    }
-
     public int MaxTokens
     {
         get;
@@ -63,6 +57,12 @@ public class AppSettings
         get;
         set;
     }
+    
+    public string ModelPreset
+    {
+        get;
+        set;
+    }
 
     public AppSettings()
     {
@@ -70,6 +70,7 @@ public class AppSettings
         BackgroundOpacity = 0.5f;
         PromptForReplacementWord = "[PROMPT]";
         PromptForReplacementWordContext = "[CONTEXT]";
+        ModelPreset = Classes.ModelPreset.Deepseek().DisplayName;
     }
 }
 
@@ -79,7 +80,7 @@ public static class AppSettingsManager
 
     static AppSettingsManager()
     {
-        _settingsFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "App", "settings.json");
+        _settingsFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DreamMoonStudioApps", "DreamTranslatePOSettings.json");
     }
 
 
@@ -98,7 +99,6 @@ public static class AppSettingsManager
                 URL = "https://default.url",
                 Model = "defaultModel",
                 APIKey = "",
-                Stream = true,
                 MaxTokens = 512,
                 PromptForReplacementWord = "[PROMPT]"
             };

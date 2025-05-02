@@ -1,4 +1,5 @@
-﻿using DreamTranslatePO.Contracts.Services;
+﻿using DreamTranslatePO.Classes;
+using DreamTranslatePO.Contracts.Services;
 using DreamTranslatePO.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -22,6 +23,10 @@ public sealed partial class MainPage : Page
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
+        if (AppSettingsManager.GetSettings().APIKey.Length == 0)
+        {
+            QuickSettingsButton.Visibility = Visibility.Visible;            
+        }
     }
 
     private void QuickStartPoButton_OnClick(object sender, RoutedEventArgs e)
@@ -32,5 +37,10 @@ public sealed partial class MainPage : Page
     private void QuickStartCsvButton_OnClick(object sender, RoutedEventArgs e)
     {
         App.GetService<INavigationService>().Frame.Navigate(typeof(CsvTranslatePage));
+    }
+
+    private void QuickSettingsButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        App.GetService<INavigationService>().Frame.Navigate(typeof(SettingsPage));
     }
 }

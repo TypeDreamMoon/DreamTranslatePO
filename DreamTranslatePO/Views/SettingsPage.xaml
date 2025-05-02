@@ -62,6 +62,8 @@
                         Padding="20"
                         Spacing="20">
 
+                        <TextBlock FontSize="30" Text="AI设置" />
+
                         <TextBlock FontSize="18" Text="提示替换词" />
                         <TextBox Name="PromptRepWordTextBox" PlaceholderText="输入 提示替换词" />
 
@@ -77,25 +79,37 @@
                             TextWrapping="Wrap"
                             x:Name="AiPromptBox" />
 
-                        <TextBlock FontSize="18" Text="URL" />
-                        <TextBox PlaceholderText="输入 API URL" x:Name="UrlTextBox" />
+                        <TextBlock FontSize="30" Text="AI模型设置" />
 
-                        <TextBlock FontSize="18" Text="Model" />
-                        <TextBox PlaceholderText="输入 Model 名称" x:Name="ModelTextBox" />
+                        <TextBlock FontSize="18" Text="预设模型提供方" />
+                        <ComboBox
+                            DisplayMemberPath="DisplayName"
+                            ItemsSource="{x:Bind ModelPresets}"
+                            Name="ModelPresetSelector"
+                            SelectionChanged="ModelPresetSelector_OnSelectionChanged" />
+
+                        <TextBlock FontSize="18" Text="模型" />
+                        <ComboBox
+                            ItemsSource="{x:Bind CurrentSelectedModelPreset.Models}"
+                            Name="ModelSelector"
+                            SelectionChanged="ModelSelector_OnSelectionChanged" />
+
+                        <StackPanel
+                            Name="ModelCustomStack"
+                            Spacing="20"
+                            Visibility="Collapsed">
+
+                            <TextBlock FontSize="18" Text="Base URL" />
+                            <TextBox PlaceholderText="输入 Base URL" x:Name="UrlTextBox" />
+
+                            <TextBlock FontSize="18" Text="Model" />
+                            <TextBox PlaceholderText="输入 Model 名称" x:Name="ModelTextBox" />
+
+                        </StackPanel>
 
                         <TextBlock FontSize="18" Text="API Key" />
                         <PasswordBox PlaceholderText="输入 API 密钥" x:Name="ApiKeyPasswordBox" />
 
-                        <StackPanel
-                            Orientation="Horizontal"
-                            Spacing="10"
-                            VerticalAlignment="Center">
-                            <TextBlock
-                                FontSize="18"
-                                Text="启用 Stream"
-                                VerticalAlignment="Center" />
-                            <ToggleSwitch x:Name="StreamToggleSwitch" />
-                        </StackPanel>
 
                         <TextBlock FontSize="18" Text="最大 Token 数量" />
                         <Grid>

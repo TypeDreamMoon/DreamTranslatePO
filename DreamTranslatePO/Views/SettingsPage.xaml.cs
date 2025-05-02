@@ -11,6 +11,8 @@ namespace DreamTranslatePO.Views;
 // TODO: Set the URL for your privacy policy by updating SettingsPage_PrivacyTermsLink.NavigateUri in Resources.resw.
 public sealed partial class SettingsPage : Page
 {
+    public List<ModelPreset> ModelPresets = new List<ModelPreset>();
+    public ModelPreset CurrentSelectedModelPreset = ModelPreset.Deepseek();
     public SettingsViewModel ViewModel
     {
         get;
@@ -20,6 +22,15 @@ public sealed partial class SettingsPage : Page
     {
         ViewModel = App.GetService<SettingsViewModel>();
         InitializeComponent();
+        ModelPresets.AddRange( new []
+        {
+            ModelPreset.SiliconFlow(),
+            ModelPreset.Deepseek(),
+            ModelPreset.Hunyuan(),
+            ModelPreset.Kimi(),
+            ModelPreset.OpenAI(),
+            ModelPreset.Custom()
+        });
     }
 
     protected override void OnNavigatedTo(Microsoft.UI.Xaml.Navigation.NavigationEventArgs e)
@@ -34,10 +45,10 @@ public sealed partial class SettingsPage : Page
     {
         AppSettingsManager.SaveSettings(new AppSettings
         {
+            ModelPreset = CurrentSelectedModelPreset.DisplayName,
             URL = UrlTextBox.Text,
             Model = ModelTextBox.Text,
             APIKey = ApiKeyPasswordBox.Password,
-            Stream = StreamToggleSwitch.IsOn,
             MaxTokens = (int)MaxTokensSlider.Value,
             PromptForReplacementWord = PromptRepWordTextBox.Text,
             PromptForReplacementWordContext = PromptRepWordContextTextBox.Text,
@@ -66,11 +77,11 @@ public sealed partial class SettingsPage : Page
         PromptRepWordTextBox.Text = settings.PromptForReplacementWord;
         PromptRepWordContextTextBox.Text = settings.PromptForReplacementWordContext;
         
+        CurrentSelectedModelPreset = FindModel(settings.ModelPreset);
+        ModelPresetSelector.SelectedItem = CurrentSelectedModelPreset;
         ModelTextBox.Text = settings.Model;
         
         ApiKeyPasswordBox.Password = settings.APIKey;
-        
-        StreamToggleSwitch.IsOn = settings.Stream;
         
         MaxTokensSlider.Value = settings.MaxTokens;
         MaxTokensTextBox.Text = settings.MaxTokens.ToString();
@@ -112,4 +123,51 @@ public sealed partial class SettingsPage : Page
     {
         ShellPageGlobal.Get().AppBackgroundBrush.Opacity = BackgroundOpacitySlider.Value / 100;
     }
-}
+
+    private void ModelPresetSelector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        Console.WriteLine($"Current Selected Preset : {GetCurrentSelectedModelPreset().DisplayName} Is Custom : {CurrentIsCustomModel()}");
+        UrlTextBox.Text = GetCurrentSelectedModelPreset().BaseUrl;
+        if (!CurrentIsCustomModel())
+        {
+            ModelSelector.ItemsSource = GetCurrentSelectedModelPreset().Models;
+            ModelSelector.SelectedItem = GetCurrentSelectedModelPreset().Models[0];
+        }
+        ModelSelector.Visibility = CurrentIsCustomModel() ? Visibility.Collapsed : Visibility.Visible;
+        ModelCustomStack.Visibility = CurrentIsCustomModel() ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private ModelPreset GetCurrentSelectedModelPreset()
+    {
+        return ModelPresetSelector.SelectedItem as ModelPreset;
+    }
+
+    private bool ModelPresetIsEqual(ModelPreset a, ModelPreset b)
+    {
+        return a.DisplayName == b.DisplayName;
+    }
+
+    private ModelPreset FindModel(string DisplayName)
+    {
+        foreach (var Elem in ModelPresets)
+        {
+            if (Elem.DisplayName == DisplayName)
+            {
+                return Elem;
+            }
+        }
+
+        return null;
+    }
+
+    private bool CurrentIsCustomModel()
+    {
+        return GetCurrentSelectedModelPreset().IsEqual(ModelPreset.Custom());
+    }
+
+    private void ModelSelector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        ModelTextBox.Text = ModelSelector.SelectedItem as string;
+        Console.WriteLine($"Current Selected Model : {ModelTextBox.Text}");
+    }
+}   

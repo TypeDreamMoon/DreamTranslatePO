@@ -73,6 +73,9 @@
   <data name="Shell_CsvTranslate.Content" xml:space="preserve">
       <value>CSV Translate</value>
     </data>
+  <data name="Shell_Convert.Content" xml:space="preserve">
+        <value>Convert</value>
+      </data>
   <data name="Shell_About.Content" xml:space="preserve">
     <value>About</value>
   </data>

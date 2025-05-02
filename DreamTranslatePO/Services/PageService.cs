@@ -18,6 +18,7 @@ public class PageService : IPageService
         Configure<POTranslateViewModel, POTranslatePage>();
         Configure<SettingsViewModel, SettingsPage>();
         Configure<AboutViewModel, AboutPage>();
+        Configure<ConvertViewModel, ConvertPage>();
         Configure<CsvTranslateViewModel, CsvTranslatePage>();
     }
 
