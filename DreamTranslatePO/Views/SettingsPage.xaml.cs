@@ -127,11 +127,14 @@ public sealed partial class SettingsPage : Page
     private void ModelPresetSelector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         Console.WriteLine($"Current Selected Preset : {GetCurrentSelectedModelPreset().DisplayName} Is Custom : {CurrentIsCustomModel()}");
-        UrlTextBox.Text = GetCurrentSelectedModelPreset().BaseUrl;
+        
+        CurrentSelectedModelPreset = GetCurrentSelectedModelPreset();
+        
+        UrlTextBox.Text = CurrentSelectedModelPreset.BaseUrl;
         if (!CurrentIsCustomModel())
         {
-            ModelSelector.ItemsSource = GetCurrentSelectedModelPreset().Models;
-            ModelSelector.SelectedItem = GetCurrentSelectedModelPreset().Models[0];
+            ModelSelector.ItemsSource = CurrentSelectedModelPreset.Models;
+            ModelSelector.SelectedItem = CurrentSelectedModelPreset.Models[0];
         }
         ModelSelector.Visibility = CurrentIsCustomModel() ? Visibility.Collapsed : Visibility.Visible;
         ModelCustomStack.Visibility = CurrentIsCustomModel() ? Visibility.Visible : Visibility.Collapsed;
@@ -162,7 +165,7 @@ public sealed partial class SettingsPage : Page
 
     private bool CurrentIsCustomModel()
     {
-        return GetCurrentSelectedModelPreset().IsEqual(ModelPreset.Custom());
+        return CurrentSelectedModelPreset.IsEqual(ModelPreset.Custom());
     }
 
     private void ModelSelector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
