@@ -15,8 +15,10 @@
         <EnableMsixTooling>true</EnableMsixTooling>
         <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
         <WindowsPackageType>None</WindowsPackageType>
-        <Version>0.6.1.1</Version>
+        
+        <Version>0.6.1.2</Version>
         <Title>Dream Translate PO</Title>
+        
         <Authors>Dream Moon</Authors>
         <Description>Po File Automation Translate</Description>
         <Copyright>Copyright (C) Dream Moon 2022 - 2025</Copyright>

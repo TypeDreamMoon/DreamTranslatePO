@@ -77,8 +77,9 @@ public sealed partial class SettingsPage : Page
         PromptRepWordTextBox.Text = settings.PromptForReplacementWord;
         PromptRepWordContextTextBox.Text = settings.PromptForReplacementWordContext;
         
-        CurrentSelectedModelPreset = FindModel(settings.ModelPreset);
+        CurrentSelectedModelPreset = FindModelPreset(settings.ModelPreset);
         ModelPresetSelector.SelectedItem = CurrentSelectedModelPreset;
+        ModelSelector.SelectedItem = settings.Model;
         ModelTextBox.Text = settings.Model;
         
         ApiKeyPasswordBox.Password = settings.APIKey;
@@ -134,7 +135,7 @@ public sealed partial class SettingsPage : Page
         if (!CurrentIsCustomModel())
         {
             ModelSelector.ItemsSource = CurrentSelectedModelPreset.Models;
-            ModelSelector.SelectedItem = CurrentSelectedModelPreset.Models[0];
+            ModelSelector.SelectedItem = AppSettingsManager.GetSettings().Model;
         }
         ModelSelector.Visibility = CurrentIsCustomModel() ? Visibility.Collapsed : Visibility.Visible;
         ModelCustomStack.Visibility = CurrentIsCustomModel() ? Visibility.Visible : Visibility.Collapsed;
@@ -150,7 +151,7 @@ public sealed partial class SettingsPage : Page
         return a.DisplayName == b.DisplayName;
     }
 
-    private ModelPreset FindModel(string DisplayName)
+    private ModelPreset FindModelPreset(string DisplayName)
     {
         foreach (var Elem in ModelPresets)
         {
