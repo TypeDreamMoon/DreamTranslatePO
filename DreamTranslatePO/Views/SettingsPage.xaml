@@ -55,6 +55,8 @@
             Name="SwitchPresenter"
             Value="{Binding SelectedItem.Tag, ElementName=MainSegmented}">
 
+            <!--  Base  -->
+
             <controls:Case Value="Base">
                 <ScrollViewer anim:Implicit.HideAnimations="{StaticResource HideTransitions}" anim:Implicit.ShowAnimations="{StaticResource ShowTransitions}">
                     <StackPanel
@@ -70,12 +72,21 @@
                         <TextBlock FontSize="18" Text="Po文件信息上下文提示替换词" />
                         <TextBox Name="PromptRepWordContextTextBox" PlaceholderText="输入 提示替换词" />
 
-                        <TextBlock FontSize="18" Text="提示词" />
+                        <TextBlock FontSize="18" Text="提示词 (System)" />
                         <TextBox
                             AcceptsReturn="True"
                             Height="300"
                             HorizontalAlignment="Stretch"
-                            PlaceholderText="在此输入 AI 提示词…"
+                            PlaceholderText="在此输入 [System] AI 提示词…"
+                            TextWrapping="Wrap"
+                            x:Name="AiSystemPromptBox" />
+
+                        <TextBlock FontSize="18" Text="提示词 (User)" />
+                        <TextBox
+                            AcceptsReturn="True"
+                            Height="300"
+                            HorizontalAlignment="Stretch"
+                            PlaceholderText="在此输入 [User] AI 提示词…"
                             TextWrapping="Wrap"
                             x:Name="AiPromptBox" />
 
@@ -136,6 +147,8 @@
                 </ScrollViewer>
             </controls:Case>
 
+            <!--  Translate  -->
+
             <controls:Case Value="Translate">
                 <ScrollViewer anim:Implicit.HideAnimations="{StaticResource HideTransitions}" anim:Implicit.ShowAnimations="{StaticResource ShowTransitions}">
                     <StackPanel
@@ -144,6 +157,17 @@
                         Spacing="20">
 
                         <TextBlock Text="开发中..." />
+
+                        <TextBlock FontSize="18" Text="翻译引擎设置" />
+                        <ComboBox HorizontalAlignment="Stretch" Name="TranslateEngineComboBox">
+                            <x:String>AI</x:String>
+                            <x:String>Microsoft Translate</x:String>
+                            <x:String>Google Translate</x:String>
+                            <x:String>Baidu</x:String>
+                            <x:String>Tencent</x:String>
+                            <x:String>DeepL</x:String>
+                        </ComboBox>
+
 
                     </StackPanel>
                 </ScrollViewer>

@@ -33,6 +33,7 @@
         <Manifest Include="$(ApplicationManifest)" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Azure.AI.Translation.Text" Version="1.0.0" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
         <PackageReference Include="CommunityToolkit.WinUI.Animations" Version="8.2.250402" />
         <PackageReference Include="CommunityToolkit.WinUI.Behaviors" Version="8.2.250402" />
@@ -42,9 +43,12 @@
         <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.250402" />
         <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="8.2.250402" />
         <PackageReference Include="CommunityToolkit.WinUI.Media" Version="8.2.250402" />
+        <PackageReference Include="DeepL" Version="0.4.3" />
+        <PackageReference Include="GoogleApi" Version="5.8.4" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
         <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.250401001" />
         <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="3.0.0" />
+        <PackageReference Include="TencentCloudSDK" Version="3.0.1232" />
         <PackageReference Include="WinUIEx" Version="2.3.2" />
     </ItemGroup>
     <ItemGroup>
